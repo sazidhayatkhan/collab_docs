@@ -13,6 +13,8 @@ model User {
   password  String
   name      String
   documents Document[]
+  messages  Message[]
+  chatRooms ChatRoom[] @relation("UserChatRooms")
 }
 
 model Document {
@@ -23,4 +25,21 @@ model Document {
   updatedAt DateTime @updatedAt
   ownerId   String
   owner     User     @relation(fields: [ownerId], references: [id])
+}
+
+model Message {
+  id         String    @id @default(cuid())
+  text       String
+  sender     User      @relation(fields: [senderId], references: [id])
+  senderId   String
+  chatRoom   ChatRoom  @relation(fields: [chatRoomId], references: [id])
+  chatRoomId String
+  createdAt  DateTime  @default(now())
+}
+
+model ChatRoom {
+  id       String   @id @default(cuid())
+  name     String
+  messages Message[]
+  users    User[]   @relation("UserChatRooms")
 }
